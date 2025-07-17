@@ -2,6 +2,7 @@ from django.db import models
 from tinymce.models import HTMLField
 from django.contrib.auth.models import User, UserManager, AbstractUser
 from django.contrib.auth.hashers import make_password
+from django.utils.translation import gettext_lazy as _
 
 class CustomUserManager(UserManager):
     def _create_user_object(self, email, password, **extra_fields):
@@ -120,3 +121,8 @@ class SiteSettings(models.Model):
 
     def __str__ (self):
         return "Settings"
+    
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=64, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)

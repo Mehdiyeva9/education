@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from core.models import Resource, HelpForm, SiteSettings, CustomUser
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True)
@@ -20,6 +22,25 @@ class UserCreateSerializer(serializers.ModelSerializer):
             password = password
         )
         return user
+    
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(
+            username=data['username'], 
+            password=data['password']
+            )
+        if user:
+            return user
+        raise serializers.ValidationError("Invalid login credentials")
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
 
 class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
