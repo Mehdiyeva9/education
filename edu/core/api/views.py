@@ -2,20 +2,19 @@ from rest_framework.generics import CreateAPIView,RetrieveUpdateAPIView, ListAPI
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from core.api.serializer import UserCreateSerializer,UserSerializer, LoginSerializer
+from core.api.serializer import UserCreateSerializer,UserSerializer, LoginSerializer, ResourceSerializer, HelpFormSerializer, SiteSettingsSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
-from django.utils.crypto import get_random_string
 from django.urls import reverse
 from django.core.mail import send_mail
-from core.models import PasswordResetToken
+from core.models import PasswordResetToken, Resource, HelpForm, SiteSettings
 
 class UserCreateAPIView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
 
-class LoginView(APIView):
+class LoginAPIView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -32,7 +31,7 @@ class UserAccountRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
-class PasswordResetView(APIView):
+class PasswordResetAPIView(APIView):
     def post(self, request):
         email = request.data.get("email")
         if not email:
@@ -58,3 +57,19 @@ class PasswordResetView(APIView):
         )
 
         return Response({"message": "Password reset link sent"}, status=status.HTTP_200_OK)
+    
+class ResourceListAPIView(ListAPIView):
+    queryset = Resource.objects.all()
+    serializer_class = ResourceSerializer
+
+class ResourceRetrieveAPIView(RetrieveAPIView):
+    queryset = Resource.objects.all()
+    serializer_class = ResourceSerializer
+
+class HelpFormCreateAPIView(CreateAPIView):
+    queryset = HelpForm.objects.all()
+    serializer_class = HelpFormSerializer
+
+class SiteSettingsListAPIView(ListAPIView):
+    queryset = SiteSettings.objects.all()
+    serializer_class = SiteSettingsSerializer
