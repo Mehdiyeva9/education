@@ -30,6 +30,7 @@ class UserAccountRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    lookup_field = "id"
 
 class PasswordResetAPIView(APIView):
     def post(self, request):
@@ -65,6 +66,7 @@ class ResourceListAPIView(ListAPIView):
 class ResourceRetrieveAPIView(RetrieveAPIView):
     queryset = Resource.objects.all()
     serializer_class = ResourceSerializer
+    lookup_field = "id"
 
 class HelpFormCreateAPIView(CreateAPIView):
     queryset = HelpForm.objects.all()
