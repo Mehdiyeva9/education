@@ -1,8 +1,4 @@
 from django.conf import urls
-from core.api.views import (
-    UserCreateAPIView, LoginAPIView, UserAccountRetrieveUpdateAPIView, PasswordResetAPIView,
-    ResourceListAPIView, ResourceRetrieveAPIView, HelpFormCreateAPIView, SiteSettingsListAPIView
-)
 from django.urls import path
 from core.api import views
 

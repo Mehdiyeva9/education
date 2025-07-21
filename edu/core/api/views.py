@@ -8,10 +8,10 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from django.urls import reverse
 from django.core.mail import send_mail
-from core.models import PasswordResetToken, Resource, HelpForm, SiteSettings
+from core.models import CustomUser, PasswordResetToken, Resource, HelpForm, SiteSettings
 
 class UserCreateAPIView(CreateAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserCreateSerializer
 
 class LoginAPIView(APIView):
@@ -24,7 +24,7 @@ class LoginAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserAccountRetrieveUpdateAPIView(RetrieveUpdateAPIView):
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
@@ -39,8 +39,8 @@ class PasswordResetAPIView(APIView):
             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
             return Response({"error": "User with this email does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
         token = PasswordResetToken.objects.create(user=user, token=token)
